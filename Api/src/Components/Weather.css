@@ -1,0 +1,867 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Bebas+Neue&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+/* ─── Global reset ───────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Theme tokens ───────────────────────────────────────────────────────────── */
+:root {
+  --accent:      #38bdf8;
+  --bg:          #060d1f;
+  --orb-a:       rgba(32,  96, 180, 0.40);
+  --orb-b:       rgba(10, 180, 140, 0.25);
+  --orb-c:       rgba(90,  30, 180, 0.20);
+  --glow:        rgba(56, 189, 248, 0.18);
+  --card-bg:     rgba(255, 255, 255, 0.055);
+  --card-border: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Clear / Sunny ────────────────────────────────────────────────────── */
+.theme-clear {
+  --bg:    #09051a;
+  --orb-a: rgba(251, 191,  36, 0.38);
+  --orb-b: rgba(245, 158,  11, 0.22);
+  --orb-c: rgba(251, 100,  10, 0.14);
+  --glow:  rgba(251, 191,  36, 0.28);
+}
+
+/* ── Clouds ───────────────────────────────────────────────────────────── */
+.theme-clouds {
+  --bg:    #060910;
+  --orb-a: rgba( 90, 120, 170, 0.38);
+  --orb-b: rgba( 60,  90, 140, 0.22);
+  --orb-c: rgba( 40,  70, 120, 0.14);
+  --glow:  rgba(100, 150, 200, 0.20);
+}
+
+/* ── Rain ─────────────────────────────────────────────────────────────── */
+.theme-rain {
+  --bg:    #03070e;
+  --orb-a: rgba( 20,  70, 160, 0.45);
+  --orb-b: rgba( 10,  50, 120, 0.30);
+  --orb-c: rgba( 30,  90, 200, 0.18);
+  --glow:  rgba( 60, 130, 230, 0.25);
+}
+
+/* ── Thunderstorm ─────────────────────────────────────────────────────── */
+.theme-storm {
+  --bg:    #04000d;
+  --orb-a: rgba(120,  40, 200, 0.42);
+  --orb-b: rgba( 70,   0, 170, 0.30);
+  --orb-c: rgba(160,  60, 255, 0.18);
+  --glow:  rgba(180,  80, 255, 0.28);
+}
+
+/* ── Snow ─────────────────────────────────────────────────────────────── */
+.theme-snow {
+  --bg:    #03080f;
+  --orb-a: rgba(170, 215, 255, 0.28);
+  --orb-b: rgba(130, 195, 255, 0.18);
+  --orb-c: rgba( 90, 170, 255, 0.14);
+  --glow:  rgba(186, 230, 255, 0.22);
+}
+
+/* ── Mist / Fog / Haze ────────────────────────────────────────────────── */
+.theme-mist {
+  --bg:    #07070a;
+  --orb-a: rgba(170, 165, 150, 0.28);
+  --orb-b: rgba(140, 135, 118, 0.18);
+  --orb-c: rgba(190, 185, 165, 0.12);
+  --glow:  rgba(200, 195, 175, 0.18);
+}
+
+/* ── Sand / Dust ──────────────────────────────────────────────────────── */
+.theme-sand {
+  --bg:    #070500;
+  --orb-a: rgba(200, 150,  30, 0.38);
+  --orb-b: rgba(175, 125,  15, 0.24);
+  --orb-c: rgba(215, 175,  50, 0.14);
+  --glow:  rgba(210, 160,  30, 0.26);
+}
+
+/* ── Default (ocean) ──────────────────────────────────────────────────── */
+.theme-default {
+  --bg:    #060d1f;
+  --orb-a: rgba(32,  96, 180, 0.40);
+  --orb-b: rgba(10, 180, 140, 0.25);
+  --orb-c: rgba(90,  30, 180, 0.20);
+  --glow:  rgba(56, 189, 248, 0.18);
+}
+
+/* ─── Root / Page ────────────────────────────────────────────────────────────── */
+.wx-root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+  transition: background 1.4s ease;
+}
+
+.wx-root::before {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 22% 20%, color-mix(in srgb, var(--accent) 22%, transparent) 0%, transparent 48%),
+    radial-gradient(circle at 80% 72%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 44%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.04) 0%, transparent 58%);
+  animation: bgPulse 18s ease-in-out infinite;
+  filter: saturate(110%);
+}
+
+/* ─── Particle canvas ────────────────────────────────────────────────────────── */
+.wx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wx-bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 54px 54px;
+  mask-image: radial-gradient(circle at center, black 15%, transparent 74%);
+  opacity: 0.25;
+}
+
+.wx-bg-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.14;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08) 0 1px, transparent 2px),
+    radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.06) 0 1px, transparent 2px);
+  background-size: 120px 120px, 160px 160px;
+  animation: noiseDrift 12s linear infinite;
+}
+
+.wx-aurora {
+  position: fixed;
+  width: 70vw;
+  height: 36vh;
+  max-width: 900px;
+  border-radius: 50%;
+  filter: blur(56px);
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+.wx-aurora-1 {
+  top: -10vh;
+  left: -14vw;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, rgba(167, 139, 250, 0.42)) 0%, transparent 70%);
+  animation: auroraFloat 24s ease-in-out infinite;
+}
+
+.wx-aurora-2 {
+  bottom: -16vh;
+  right: -10vw;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, rgba(45, 212, 191, 0.4)) 0%, transparent 70%);
+  animation: auroraFloat 28s ease-in-out infinite reverse;
+}
+
+/* ─── Atmospheric orbs ───────────────────────────────────────────────────────── */
+.wx-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.wx-orb-1 {
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, var(--orb-a) 0%, transparent 72%);
+  top: -18%;
+  left: -15%;
+  animation: orbDrift 28s ease-in-out infinite;
+  transition: background 1.6s ease;
+}
+
+.wx-orb-2 {
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, var(--orb-b) 0%, transparent 72%);
+  bottom: -12%;
+  right: -12%;
+  animation: orbDrift 22s ease-in-out infinite reverse;
+  animation-delay: -9s;
+  transition: background 1.6s ease;
+}
+
+.wx-orb-3 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, var(--orb-c) 0%, transparent 72%);
+  top: 38%;
+  left: 38%;
+  animation: orbDrift 34s ease-in-out infinite;
+  animation-delay: -17s;
+  transition: background 1.6s ease;
+}
+
+@keyframes orbDrift {
+  0%,  100% { transform: translate(  0px,   0px) scale(1.00); }
+  25%        { transform: translate( 40px, -30px) scale(1.06); }
+  50%        { transform: translate( 15px,  45px) scale(0.95); }
+  75%        { transform: translate(-30px,  15px) scale(1.03); }
+}
+
+/* ─── Card shell ─────────────────────────────────────────────────────────────── */
+.wx-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  border-radius: 28px;
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* Outer glow ring — reacts to theme accent */
+.wx-card-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 30px;
+  background: transparent;
+  box-shadow:
+    0 0  60px var(--glow),
+    0 0 120px var(--glow),
+    0 0  20px rgba(255,255,255,0.04) inset;
+  pointer-events: none;
+  z-index: 0;
+  transition: box-shadow 1.6s ease;
+}
+
+/* Top-edge shimmer line */
+.wx-card-shimmer {
+  position: absolute;
+  top: 1px;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─── Glass card inner ───────────────────────────────────────────────────────── */
+.wx-card-inner {
+  position: relative;
+  z-index: 1;
+  padding: 2.5rem 2.25rem 2.25rem;
+  border-radius: 28px;
+  background: var(--card-bg);
+  backdrop-filter: blur(48px) saturate(180%);
+  -webkit-backdrop-filter: blur(48px) saturate(180%);
+  border: 1px solid var(--card-border);
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.55),
+    0  2px  0  rgba(255,255,255,0.18) inset,
+    0 -1px  0  rgba(0, 0, 0, 0.30) inset;
+  overflow: hidden;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.wx-card-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(120deg, rgba(255,255,255,0.09) 0%, transparent 38%),
+    radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--accent) 28%, transparent) 0%, transparent 45%);
+}
+
+.wx-card-inner > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────────── */
+.wx-header { margin-bottom: 1.75rem; }
+
+.wx-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.32);
+  user-select: none;
+}
+
+.wx-subtitle {
+  margin-top: 0.42rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.34);
+  font-family: "JetBrains Mono", monospace;
+}
+
+.wx-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent), 0 0 20px var(--accent);
+  animation: dotPulse 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+  transition: background 1s ease, box-shadow 1s ease;
+}
+
+@keyframes dotPulse {
+  0%,  100% { transform: scale(1);    opacity: 1;   box-shadow: 0 0  8px var(--accent); }
+  50%        { transform: scale(1.25); opacity: 0.7; box-shadow: 0 0 20px var(--accent); }
+}
+
+/* ─── Search row ─────────────────────────────────────────────────────────────── */
+.wx-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.wx-input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255,255,255,0.065);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 14px;
+  padding: 0.8rem 1.1rem;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.97rem;
+  color: #fff;
+  outline: none;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+
+.wx-input::placeholder { color: rgba(255,255,255,0.27); }
+
+.wx-input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.10);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+}
+
+.wx-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.8rem 1.45rem;
+  background: linear-gradient(135deg,
+    rgba(255,255,255,0.18) 0%,
+    rgba(255,255,255,0.08) 100%);
+  border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s, border-color 0.2s;
+}
+
+.wx-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), transparent 80%);
+  opacity: 0.25;
+  transition: opacity 0.25s;
+}
+
+.wx-btn:hover:not(:disabled)::before { opacity: 0.45; }
+.wx-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  border-color: color-mix(in srgb, var(--accent) 40%, rgba(255,255,255,0.2));
+}
+.wx-btn:active:not(:disabled) { transform: translateY(0); }
+.wx-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+/* ─── Spinner ────────────────────────────────────────────────────────────────── */
+.wx-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255,255,255,0.28);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.72s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Error ──────────────────────────────────────────────────────────────────── */
+.wx-error {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  border-radius: 12px;
+  padding: 0.68rem 1rem;
+  font-size: 0.86rem;
+  color: #fca5a5;
+  margin-bottom: 1rem;
+  animation: errSlide 0.32s ease;
+}
+
+.wx-error::before { content: "⚠"; flex-shrink: 0; }
+
+@keyframes errSlide {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Skeleton ───────────────────────────────────────────────────────────────── */
+.wx-skeleton {
+  padding-top: 0.25rem;
+  animation: riseIn 0.4s ease;
+}
+
+.wx-skel {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.12) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 10px;
+  animation: shimmer 1.6s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+.wx-skel-city { height: 30px; width: 55%; }
+.wx-skel-temp { height: 88px; width: 40%; border-radius: 8px; }
+.wx-skel-desc { height: 16px; width: 70%; }
+.wx-skel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+.wx-skel-stat { height: 80px; border-radius: 16px; margin-bottom: 0; }
+
+@keyframes shimmer {
+  from { background-position:  200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+/* ─── Result ─────────────────────────────────────────────────────────────────── */
+.wx-result {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.wx-result--in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Location ───────────────────────────────────────────────────────────────── */
+.wx-location { margin-bottom: 1.25rem; }
+
+.wx-city {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(
+    130deg,
+    #ffffff 35%,
+    rgba(220, 240, 255, 0.85) 65%,
+    color-mix(in srgb, var(--accent) 75%, white) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: background 1s ease;
+}
+
+.wx-country {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.67rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.wx-country-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* ─── Main display ───────────────────────────────────────────────────────────── */
+.wx-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* Temperature */
+.wx-temp-wrap {
+  display: flex;
+  align-items: flex-start;
+  line-height: 1;
+  position: relative;
+}
+
+.wx-temp {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5.5rem, 16vw, 8rem);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  background: linear-gradient(
+    160deg,
+    #ffffff 25%,
+    rgba(220, 240, 255, 0.9) 55%,
+    color-mix(in srgb, var(--accent) 65%, white) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--accent) 35%, transparent));
+  transition: background 1s ease, filter 1s ease;
+}
+
+.wx-unit {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 0.55rem;
+  color: rgba(255,255,255,0.45);
+  -webkit-text-fill-color: rgba(255,255,255,0.45);
+}
+
+/* Weather icon */
+.wx-icon-wrap {
+  position: relative;
+  padding-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wx-icon {
+  font-size: clamp(3.5rem, 10vw, 4.8rem);
+  display: block;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--accent) 55%, transparent));
+  animation: iconFloat 4.5s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+  transition: filter 1s ease;
+}
+
+/* Soft halo behind icon */
+.wx-icon-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 20%, transparent) 0%, transparent 70%);
+  animation: ringPulse 4.5s ease-in-out infinite;
+  transition: background 1s ease;
+}
+
+@keyframes iconFloat {
+  0%,  100% { transform: translateY( 0px) rotate(-3deg); }
+  50%        { transform: translateY(-9px) rotate( 3deg); }
+}
+
+@keyframes ringPulse {
+  0%,  100% { transform: scale(1);    opacity: 0.6; }
+  50%        { transform: scale(1.2); opacity: 1;   }
+}
+
+/* ─── Description ────────────────────────────────────────────────────────────── */
+.wx-desc {
+  font-size: 0.96rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.42);
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  margin-bottom: 1.4rem;
+}
+
+/* ─── Divider ────────────────────────────────────────────────────────────────── */
+.wx-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.3rem;
+}
+
+.wx-divider span:first-child,
+.wx-divider span:last-child {
+  display: block;
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.13), transparent);
+}
+
+.wx-divider-gem {
+  display: inline-block !important;
+  width: 5px  !important;
+  height: 5px !important;
+  flex: 0 0 auto !important;
+  border-radius: 50% !important;
+  background: var(--accent) !important;
+  opacity: 0.65;
+  box-shadow: 0 0 8px var(--accent);
+  transition: background 1s ease, box-shadow 1s ease;
+}
+
+/* ─── Stats grid ─────────────────────────────────────────────────────────────── */
+.wx-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.wx-stat {
+  position: relative;
+  background: rgba(255,255,255,0.042);
+  border: 1px solid rgba(255,255,255,0.076);
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  overflow: hidden;
+  transition: background 0.22s, border-color 0.22s, transform 0.22s, box-shadow 0.22s;
+  animation: statIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 65ms + 120ms);
+  cursor: default;
+}
+
+.wx-stat:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+
+.wx-stat::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -60% -20%;
+  height: 80%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--accent) 16%, transparent) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wx-stat:hover::after {
+  opacity: 1;
+}
+
+@keyframes statIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Coloured accent top edge */
+.wx-stat-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 18px 18px 0 0;
+}
+
+.wx-stat--humid .wx-stat-accent { background: linear-gradient(90deg, #38bdf8, #818cf8); }
+.wx-stat--wind  .wx-stat-accent { background: linear-gradient(90deg, #34d399, #059669); }
+.wx-stat--feels .wx-stat-accent { background: linear-gradient(90deg, #fb923c, #f43f5e); }
+.wx-stat--vis   .wx-stat-accent { background: linear-gradient(90deg, #a78bfa, #6366f1); }
+
+.wx-stat-emoji {
+  font-size: 1.05rem;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.wx-stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.33);
+  margin-bottom: 4px;
+}
+
+.wx-stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.wx-stat-val small {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+}
+
+.wx-dir {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  margin-left: 3px;
+  transition: color 1s ease;
+}
+
+/* ─── Humidity bar ───────────────────────────────────────────────────────────── */
+.wx-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  margin-top: 7px;
+  overflow: hidden;
+}
+
+.wx-bar-fill {
+  height: 100%;
+  width: var(--pct, 0%);
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  border-radius: 3px;
+  animation: barGrow 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.4s;
+}
+
+@keyframes barGrow {
+  from { width: 0 !important; }
+}
+
+/* ─── Shared animation ───────────────────────────────────────────────────────── */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bgPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+  50% { transform: scale(1.08) rotate(3deg); opacity: 1; }
+}
+
+@keyframes noiseDrift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(30px, -22px, 0); }
+}
+
+@keyframes auroraFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(20px, 24px, 0) scale(1.06); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .wx-card-inner {
+    padding: 1.85rem 1.6rem 1.75rem;
+  }
+  .wx-city {
+    font-size: 1.75rem;
+  }
+  .wx-stat {
+    border-radius: 14px;
+    padding: 0.75rem 0.85rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .wx-card-inner {
+    padding: 1.6rem 1.3rem;
+  }
+  .wx-temp {
+    font-size: 5rem;
+  }
+  .wx-icon {
+    font-size: 3.2rem;
+  }
+  .wx-grid {
+    grid-template-columns: 1fr;
+  }
+  .wx-btn {
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .wx-card { max-width: 490px; }
+  .wx-city { font-size: 2.3rem; }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .wx-card {
+    transform: none !important;
+  }
+}
